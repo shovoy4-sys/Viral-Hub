@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>আমাদের টেলিগ্রাম চ্যানেলে জয়েন করোন </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, 'Segoe UI', 'Roboto', sans-serif;
+            background: radial-gradient(circle at 10% 20%, #0a0f1f, #02050c);
+            min-height: 100vh;
+            padding: 24px 16px 100px;
+        }
+
+        .gallery-container {
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* সার্চ বার */
+        .search-section {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+        }
+        .search-box {
+            background: #111827cc;
+            backdrop-filter: blur(12px);
+            border-radius: 70px;
+            padding: 6px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #3b82f6;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 500px;
+        }
+        .search-box input {
+            background: transparent;
+            border: none;
+            padding: 14px 8px;
+            font-size: 1rem;
+            color: white;
+            width: 100%;
+            outline: none;
+        }
+        .search-box input::placeholder {
+            color: #9ca3af;
+        }
+        .search-box button {
+            background: linear-gradient(95deg, #2563eb, #4f46e5);
+            border: none;
+            border-radius: 50px;
+            padding: 8px 22px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .search-box button:hover {
+            background: #3b82f6;
+        }
+
+        /* থাম্বনেল গ্রিড */
+        .thumb-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 26px;
+            margin-bottom: 50px;
+        }
+
+        /* ভিডিও কার্ড */
+        .video-card {
+            background: linear-gradient(145deg, #0f172a, #0a0f1c);
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 30px -10px black;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(59,130,246,0.3);
+            position: relative;
+        }
+        .video-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 40px -8px #3b82f6, 0 0 0 1px #3b82f680;
+        }
+
+        .thumbnail-wrapper {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            overflow: hidden;
+        }
+        .thumbnail-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+        .video-card:hover .thumbnail-img {
+            transform: scale(1.04);
+        }
+
+        /* লাল গোলাকার ভিডিও আইকন */
+        .video-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 56px;
+            height: 56px;
+            background: #e11d48;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0 4px rgba(225,29,72,0.5);
+            pointer-events: none;
+            z-index: 2;
+        }
+        .video-icon::after {
+            content: "▶";
+            font-size: 26px;
+            color: white;
+            margin-left: 4px;
+            font-weight: bold;
+        }
+
+        /* সিরিয়াল নাম্বার ব্যাজ (উপরে বামে) */
+        .serial-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: linear-gradient(135deg, #f97316, #dc2626);
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            padding: 5px 12px;
+            border-radius: 60px;
+            z-index: 15;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            font-family: monospace;
+            letter-spacing: 0.5px;
+            border: 1px solid #ffb347;
+            pointer-events: none;
+        }
+
+        /* বাটন বার */
+        .button-bar {
+            display: flex;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #0b1020;
+            border-top: 1px solid #1e2a4a;
+        }
+        .play-btn, .download-btn {
+            flex: 1;
+            padding: 10px 0;
+            border-radius: 60px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .play-btn {
+            background: linear-gradient(95deg, #2563eb, #4f46e5);
+            color: white;
+        }
+        .play-btn:hover {
+            background: #3b82f6;
+            box-shadow: 0 4px 12px #2563eb;
+        }
+        .download-btn {
+            background: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+        }
+        .download-btn:hover {
+            background: #2d3a5e;
+        }
+
+        /* পেজিনেশন - ছবির মতো ডিজাইন, ব্যাকগ্রাউন্ড সহ, ১ থেকে ১০ পর্যন্ত */
+        .pagination-container {
+            margin: 20px auto 40px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            background: rgba(10, 15, 30, 0.7);
+            backdrop-filter: blur(16px);
+            padding: 12px 24px;
+            border-radius: 80px;
+            width: fit-content;
+            border: 1px solid rgba(249, 115, 22, 0.5);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+        
+        .page-number {
+            background: #111827;
+            color: #cbd5e6;
+            min-width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #f97316;
+            box-shadow: 0 2px 6px black;
+            padding: 0 6px;
+        }
+        .page-number.active-page {
+            background: linear-gradient(145deg, #f97316, #ea580c);
+            color: white;
+            border-color: #facc15;
+            box-shadow: 0 0 12px #f97316;
+            transform: scale(1.05);
+        }
+        .page-number:hover:not(.active-page) {
+            background: #f97316;
+            transform: translateY(-2px);
+        }
+
+        /* টেলিগ্রাম গ্লো লোগো */
+        .telegram-fixed {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            pointer-events: none;
+        }
+        .telegram-card {
+            background: rgba(0, 20, 40, 0.9);
+            backdrop-filter: blur(16px);
+            border-radius: 100px;
+            padding: 10px 26px;
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            pointer-events: auto;
+            cursor: pointer;
+            border: 1px solid #2a6df0;
+            box-shadow: 0 0 12px #0088cc, 0 0 20px #3b82f6;
+            animation: telegramPulse 1.8s infinite alternate;
+            transition: 0.2s;
+        }
+        @keyframes telegramPulse {
+            0% { box-shadow: 0 0 5px #2a6df0, 0 4px 15px rgba(0,0,0,0.4); border-color: #2a6df0; }
+            100% { box-shadow: 0 0 28px #3b82f6, 0 0 35px #0088cc; border-color: #60a5fa; background: #0a2a4ae6; }
+        }
+        .telegram-card:hover {
+            transform: scale(1.03);
+            animation: none;
+            box-shadow: 0 0 35px #3b82f6;
+        }
+        .telegram-logo {
+            width: 36px;
+            height: 36px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.6-1.38-.97-2.23-1.56-.99-.69-.35-1.07.22-1.69.15-.15 2.71-2.48 2.76-2.69.01-.03.02-.13-.05-.18s-.17-.03-.24-.01c-.1.02-1.72 1.09-4.86 3.2-.46.32-.88.47-1.25.46-.41-.01-1.2-.23-1.79-.42-.73-.24-1.31-.37-1.26-.78.03-.22.33-.44.91-.67 3.57-1.55 5.94-2.57 7.13-3.05 3.39-1.36 4.09-1.6 4.55-1.6.1 0 .33.02.48.15.12.1.15.24.17.37-.01.1-.02.19-.03.29z"/></svg>') no-repeat center;
+            background-size: contain;
+            filter: drop-shadow(0 0 6px cyan);
+        }
+        .telegram-text {
+            color: white;
+            font-weight: 800;
+            font-size: 1.2rem;
+            text-shadow: 0 0 5px #3b82f6;
+        }
+        .info-note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #ffb347;
+            background: #00000066;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 5px 16px;
+            border-radius: 40px;
+        }
+        /* কাউন্টডাউন স্টাইল */
+        .countdown-tag {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background: #000000aa;
+            backdrop-filter: blur(12px);
+            padding: 8px 16px;
+            border-radius: 40px;
+            color: #f97316;
+            font-weight: bold;
+            font-size: 0.9rem;
+            z-index: 999;
+            font-family: monospace;
+            border: 1px solid #f97316;
+            pointer-events: none;
+        }
+        @media (max-width: 680px) {
+            .page-number { min-width: 38px; height: 38px; font-size: 0.9rem; }
+            .serial-badge { font-size: 0.7rem; padding: 3px 10px; top: 8px; left: 8px; }
+            .countdown-tag { bottom: 90px; font-size: 0.7rem; padding: 4px 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="gallery-container">
+    <!-- সার্চ অপশন -->
+    <div class="search-section">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 ভিডিও সার্চ করুন...">
+            <button id="searchBtn">সার্চ</button>
+        </div>
+    </div>
+
+    <!-- পেজিনেশন: ১ থেকে ১০ পর্যন্ত, প্রতিটি আলাদা লিংক -->
+    <div id="paginationWrapper" class="pagination-container"></div>
+
+    <!-- থাম্বনেল গ্রিড -->
+    <div class="thumb-grid" id="thumbGrid"></div>
+
+    <div class="info-note">💣💣💣💣💣💣💣💣💣💣</div>
+</div>
+
+<!-- টেলিগ্রাম গ্লো লোগো -->
+<div class="telegram-fixed">
+    <div class="telegram-card" id="telegramGlowBtn">
+        <div class="telegram-logo"></div>
+        <div>
+            <span class="telegram-text">✨ জয়েন করুন</span>
+        </div>
+    </div>
+</div>
+
+<div id="countdownDisplay" class="countdown-tag"></div>
+
+<script>
+    // ============================================================
+    // ★★★ কাস্টমাইজেবল লিংক ও কনফিগ ★★★
+    // ============================================================
+    // পেজিনেশন ১-১০ এর জন্য নির্দিষ্ট লিংক (প্রতিটি নাম্বারে ভিন্ন লিংক ওপেন হবে)
+    const PAGINATION_LINKS = {
+        1: "https://t.co/yFomWh9JOQ",
+        2: "https://t.co/EMhlGpN28J2-premium",
+        3: "https://www.profitablecpmratenetwork.com/anpkz6qd?key=c6eeb5759a9967b0b08628b685abd0de3-gaming",
+        4: "https://t.co/twb6TDkLcT",
+        5: "https://t.co/5XSmXWloYV5-music",
+        6: "https://www.profitablecpmratenetwork.com/sbyrcths2?key=ab01d1997abdcd618fa94aa6fb20765b",
+        7: "https://t.co/yFomWh9JOQ",
+        8: "https://t.co/EMhlGpN28J",
+        9: "https://www.profitablecpmratenetwork.com/anpkz6qd?key=c6eeb5759a9967b0b08628b685abd0de",
+        10: "https://t.co/5XSmXWloYV"
+    };
+    
+    // ডাইরেক্ট ফুলস্ক্রিন এড লিংক - ৮ সেকেন্ড পর অটো রিডাইরেক্ট হবে (কোন ক্লিক ছাড়া)
+    const FULLSCREEN_AD_URL = "https://t.co/yFomWh9JOQ";
+    
+    // টেলিগ্রাম জয়েন লিংক
+    const TELEGRAM_URL = "https://t.me/Xnxx_Video_Link_Hub_Bot";
+    
+    // ========== ভিডিও ডাটা (বাংলা কন্টেন্ট, থাম্বনেল) ==========
+    const VIDEO_DATA = [
+        { serial: 1, title: "ভিডিও দেখতে চাইলে OK মধ্যে চাপ দিন 👍", thumb: "https://i.ibb.co.com/twjVb6hp/IMG-20260428-221038.jpg", videoUrl: "https://omg10.com/4/9717825", downloadUrl: "https://omg10.com/4/9429975" },
+        { serial: 2, title: "ভিডিও দেখতে চাইলে OK মধ্যে চাপ দিন �", thumb: "https://i.ibb.co.com/Psw21Ryz/IMG-20260428-221006.jpg", videoUrl: "https://omg10.com/4/9446627", downloadUrl: "https://bacchadervideo.pages.dev/" },
+        { serial: 3, title: "ভিডিও দেখতে চাইলে OK মধ্যে চাপ দিন �", thumb: "https://i.ibb.co.com/VP3VRJB/IMG-20260428-220952.jpg", videoUrl: "https://free-paid-group.vercel.app/", downloadUrl: "https://omg10.com/4/9429975" },
+        { serial: 4, title: "ভিডিও দেখতে চাইলে OK মধ্যে চাপ দিন �", thumb: "https://i.ibb.co.com/cS1CXnrx/IMG-20260428-220913.jpg", videoUrl: "https://bacchadervideo.pages.dev/", downloadUrl: "https://omg10.com/4/9717825" },
+        { serial: 5, title: "ভিডিও দেখতে চাইলে OK মধ্যে চাপ দিন �", thumb: "https://i.ibb.co.com/FrM6TDX/IMG-20260428-220840.jpg", videoUrl: "https://omg10.com/4/9446627", downloadUrl: "https://free-paid-group.vercel.app/" },
+        { serial: 6, title: "ভিডিও দেখতে চাইলে OK মধ্যে চাপ দিন �", thumb: "https://i.ibb.co.com/Xr3x1gDf/IMG-20260428-220936.jpg", videoUrl: "https://bacchadervideo.pages.dev/", downloadUrl: "https://omg10.com/4/9717825" },
+        { serial: 7, title: "ভিডিও দেখতে চাইলে OK মধ্যে চাপ দিন �", thumb: "https://i.ibb.co.com/4ZzgnK67/IMG-20260428-220810.jpg", videoUrl: "https://bacchadervideo.pages.dev/", downloadUrl: "https://free-paid-group.vercel.app/" },
+        { serial: 8, title: "ভিডিও দেখতে চাইলে OK মধ্যে চাপ দিন �", thumb: "https://i.ibb.co.com/HTcZWfFz/1777392349237.jpg", videoUrl: "https://omg10.com/4/9717825", downloadUrl: "https://omg10.com/4/9429975" },
+        { serial: 9, title: "ভিডিও দেখতে চাইলে OK মধ্যে চাপ দিন �", thumb: "https://i.ibb.co.com/XfFn1dqq/Screenshot-2026-04-28-21-57-17-44-4079e20a3332ff1979b45f43e9e5241a.jpg", videoUrl: "https://omg10.com/4/9717825", downloadUrl: "https://omg10.com/4/9446627" },
+        { serial: 10, title: "ভিডিও দেখতে চাইলে OK মধ্যে চাপ দিন �", thumb: "https://i.ibb.co.com/p6PMVXzK/FB-IMG-1777392115292.jpg", videoUrl: "https://free-paid-group.vercel.app/", downloadUrl: "https://bacchadervideo.pages.dev/" }
+    ];
+
+    // ---------- অটো রিডাইরেক্ট ফাংশন (কোনো ক্লিক ছাড়া সরাসরি ফুলস্ক্রিন এড লিংকে) ----------
+    let redirectExecuted = false;  // একবার রিডাইরেক্ট হবে
+    
+    function autoRedirectToFullscreenAd() {
+        if (redirectExecuted) return;
+        redirectExecuted = true;
+        
+        // কাউন্টডাউন ডিসপ্লে আপডেট বন্ধ করে সরাসরি রিডাইরেক্ট
+        // ইউজারকে জানানোর জন্য একটি ছোট নোটিশ দেখানো যেতে পারে, তবে সরাসরি location পরিবর্তন
+        // ফুলস্ক্রিন ইফেক্টের জন্য নতুন ট্যাবেও খোলা যায় কিন্তু নির্দেশনা অনুযায়ী অটো রিডাইরেক্ট (একই ট্যাবে বা নতুন ট্যাব)
+        // এখানে একই ট্যাবে রিডাইরেক্ট করলে পেজ চলে যাবে, কিন্তু ভালো ইউজার এক্সপেরিয়েন্সের জন্য নতুন ট্যাবেও খোলা যেতে পারে, তবে "ফুলস্ক্রিন ডাইরেক্ট" চাওয়া হয়েছে।
+        // যেহেতু ফুলস্ক্রিন এড ডাইরেক্ট লিংকে নিয়ে যেতে হবে, তাই আমরা _blank ব্যবহার করছি যাতে মূল পেজ বন্ধ না হয়
+        // কিন্তু নির্দেশ "ফুলস্ক্রিন ডাইরেক্ট লিংকের ভিতর নিয়ে যাবে" - নতুন ট্যাবে ওপেন করলেও সেটা ফুলস্ক্রিন হতে পারে। গ্রাহকের ইচ্ছা অনুযায়ী window.location.href ও ব্যবহার করতে পারেন।
+        // আমরা এখানে নতুন ট্যাবে ওপেন করছি (কারন ইউজার দেখতে পারে ভিডিও গ্যালারি যেন বাদ না যায়) , কিন্তু চাইলে একই ট্যাব।
+        // নিচে একই ট্যাবে এবং নতুন ট্যাব - উভয় অপশন কমেন্ট করা। আপনারা ইচ্ছামত পরিবর্তন করতে পারেন। কাস্টমাইজেবল।
+        
+        // সরাসরি মূল পেজ রিডাইরেক্ট করতে চাইলে:
+        // window.location.href = FULLSCREEN_AD_URL;
+        
+        // কিন্তু নির্দেশনা অনুযায়ী "অটো রিডাইরেক্ট কোন জায়গায় ক্লিক করা ছাড়া ফুল স্কিন ডাইরেক্ট লিংকের ভিতর নিয়ে যাবে"
+        // সুতরাং উইন্ডো লোকেশন পরিবর্তন করাই সঠিক (পুরো পেজ রিডাইরেক্ট)
+        window.location.href = FULLSCREEN_AD_URL;
+    }
+    
+    // কাউন্টডাউন টাইমার দেখানোর জন্য UI (শুধু ইউজারকে জানানোর জন্য)
+    let countdownSeconds = 8;
+    const countdownElement = document.getElementById('countdownDisplay');
+    if (countdownElement) {
+        countdownElement.innerText = `🎬 ফুলস্ক্রিন এড শুরু হবে: ${countdownSeconds} সেকেন্ডে`;
+        const timerInterval = setInterval(() => {
+            if (redirectExecuted) {
+                clearInterval(timerInterval);
+                return;
+            }
+            countdownSeconds--;
+            if (countdownSeconds >= 0) {
+                if (countdownElement) countdownElement.innerText = `🎬 ফুলস্ক্রিন এড শুরু হবে: ${countdownSeconds} সেকেন্ডে`;
+                if (countdownSeconds === 0) {
+                    clearInterval(timerInterval);
+                }
+            } else {
+                clearInterval(timerInterval);
+            }
+        }, 1000);
+    }
+    
+    // ৮ সেকেন্ড পর অটো রিডাইরেক্ট (কোনো প্রম্পট ছাড়া সরাসরি)
+    setTimeout(() => {
+        autoRedirectToFullscreenAd();
+    }, 8000);  // Exactly 8 seconds
+
+    // ========== পেজিনেশন ও থাম্বনেল ব্যবস্থাপনা ==========
+    let currentPage = 1;
+    let searchQuery = "";
+    const ITEMS_PER_PAGE = 8;
+    
+    function getFilteredVideos() {
+        if (!searchQuery.trim()) return VIDEO_DATA;
+        return VIDEO_DATA.filter(v => v.title.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
+    
+    function getTotalPages() {
+        return Math.ceil(getFilteredVideos().length / ITEMS_PER_PAGE);
+    }
+    
+    function getCurrentPageVideos() {
+        const filtered = getFilteredVideos();
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filtered.slice(start, start + ITEMS_PER_PAGE);
+    }
+    
+    // পেজিনেশন নাম্বার ক্লিক করলে আলাদা লিংক ওপেন হবে (পূর্বের নিয়ম)
+    function openPaginationLink(pageNumber) {
+        const link = PAGINATION_LINKS[pageNumber];
+        if(link) {
+            window.open(link, '_blank');
+        } else {
+            console.warn(`পেজ ${pageNumber} এর জন্য লিংক নেই`);
+            alert(`পেজ ${pageNumber} - লিংক সংযুক্ত নয়`);
+        }
+    }
+    
+    // ভিডিও প্লে/ডাউনলোড হ্যান্ডলার (কোনো এড স্বয়ংক্রিয়ভাবে আসবে না, শুধু ৮ সেকেন্ড পরের অটো রিডাইরেক্ট)
+    function handlePlay(videoUrl, title, event) {
+        event.stopPropagation();
+        if(confirm(`"${title}" ভিডিওটি প্লে করবেন?`)) {
+            window.open(videoUrl, '_blank');
+        }
+    }
+    
+    function handleDownload(downloadUrl, title, event) {
+        event.stopPropagation();
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `${title.replace(/[^a-z0-9]/gi, '_')}.mp4`;
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+    
+    function handleCardClick(video, event) {
+        event.stopPropagation();
+        if(confirm(`"${video.title}" ভিডিওটি প্লে করতে চান?`)) {
+            window.open(video.videoUrl, '_blank');
+        }
+    }
+    
+    // থাম্বনেল রেন্ডার
+    function renderThumbnails() {
+        const grid = document.getElementById('thumbGrid');
+        if (!grid) return;
+        const pageVideos = getCurrentPageVideos();
+        if (pageVideos.length === 0 && searchQuery) {
+            grid.innerHTML = `<div style="color:white; text-align:center; grid-column:1/-1; padding:50px;">🔍 কোন ভিডিও পাওয়া যায়নি</div>`;
+            return;
+        }
+        grid.innerHTML = '';
+        pageVideos.forEach(video => {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            
+            const thumbWrap = document.createElement('div');
+            thumbWrap.className = 'thumbnail-wrapper';
+            const img = document.createElement('img');
+            img.src = video.thumb;
+            img.alt = video.title;
+            img.className = 'thumbnail-img';
+            img.loading = 'lazy';
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'video-icon';
+            thumbWrap.appendChild(img);
+            thumbWrap.appendChild(iconDiv);
+            
+            const serialBadge = document.createElement('div');
+            serialBadge.className = 'serial-badge';
+            serialBadge.innerText = `#${video.serial}`;
+            thumbWrap.appendChild(serialBadge);
+            
+            const btnBar = document.createElement('div');
+            btnBar.className = 'button-bar';
+            const playBtn = document.createElement('button');
+            playBtn.className = 'play-btn';
+            playBtn.innerHTML = '▶ প্লে';
+            const downBtn = document.createElement('button');
+            downBtn.className = 'download-btn';
+            downBtn.innerHTML = '⬇ ডাউনলোড';
+            
+            playBtn.addEventListener('click', (e) => handlePlay(video.videoUrl, video.title, e));
+            downBtn.addEventListener('click', (e) => handleDownload(video.downloadUrl, video.title, e));
+            card.addEventListener('click', (e) => handleCardClick(video, e));
+            
+            btnBar.appendChild(playBtn);
+            btnBar.appendChild(downBtn);
+            card.appendChild(thumbWrap);
+            card.appendChild(btnBar);
+            grid.appendChild(card);
+        });
+    }
+    
+    // পেজিনেশন রেন্ডার: 1-10 প্রতিটি আলাদা লিংক ওপেন করবে (ক্লিক করলেই)
+    function renderPagination() {
+        const container = document.getElementById('paginationWrapper');
+        if (!container) return;
+        const totalPages = getTotalPages();
+        const maxVisible = 10;
+        container.innerHTML = '';
+        
+        for (let i = 1; i <= maxVisible; i++) {
+            const pageBtn = document.createElement('div');
+            pageBtn.className = 'page-number';
+            if (i === currentPage && i <= totalPages) {
+                pageBtn.classList.add('active-page');
+            }
+            pageBtn.innerText = i;
+            
+            pageBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // প্রথমে ইউনিক লিংক ওপেন হবে (প্রত্যেক নম্বরের জন্য আলাদা)
+                openPaginationLink(i);
+                // এরপর পেজ কন্টেন্ট পরিবর্তন (valid পেজ হলেই)
+                if (i <= totalPages) {
+                    currentPage = i;
+                    renderThumbnails();
+                    renderPagination();
+                }
+            });
+            container.appendChild(pageBtn);
+        }
+    }
+    
+    // সার্চ ফাংশন (শুধু লিস্ট রিফ্রেশ)
+    function performSearch() {
+        const input = document.getElementById('searchInput');
+        searchQuery = input.value.trim();
+        currentPage = 1;
+        renderThumbnails();
+        renderPagination();
+    }
+    
+    // টেলিগ্রাম বাটন
+    function setupTelegram() {
+        const tg = document.getElementById('telegramGlowBtn');
+        if (tg) {
+            tg.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.open(TELEGRAM_URL, '_blank');
+            });
+        }
+    }
+    
+    // সবকিছু লোড
+    function init() {
+        renderThumbnails();
+        renderPagination();
+        setupTelegram();
+        
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+        
+        console.log("✅ গ্যালারি প্রস্তুত। ৮ সেকেন্ড পর অটোমেটিক ফুলস্ক্রিন এড রিডাইরেক্ট (কোনো ক্লিক ছাড়া)। পেজিনেশন নম্বরগুলোর আলাদা লিংক ঠিক আছে।");
+    }
+    
+    init();
+</script>
+</body>
+</html>
